@@ -37,7 +37,7 @@ struct TemporalisteModule : Module {
     // Clock and rhythm state
     dsp::SchmittTrigger clockTrigger;
     dsp::PulseGenerator gateGenerators[4];
-    
+
     // Polyrhythm layers (1-4 active)
     struct RhythmLayer {
         int division = 1;      // Clock division ratio
@@ -47,32 +47,32 @@ struct TemporalisteModule : Module {
         float phase = 0.f;     // Timing phase offset
         bool active = true;
     };
-    
+
     RhythmLayer layers[4];
-    
+
     // Stochastic drift
     float driftPhases[4] = {};
-    
+
     // Spectral accent shaping
     static constexpr int ACCENT_BUFFER_SIZE = 4096;
     float accentBuffer[ACCENT_BUFFER_SIZE] = {};
     int accentWriteIdx = 0;
-    
+
     // Time-space shift buffers for micro-timing
     static constexpr int TIMESHIFT_BUFFER_SIZE = 8192;
     float timeshiftBuffers[4][TIMESHIFT_BUFFER_SIZE] = {};
     int timeshiftWriteIdx = 0;
-    
+
     // Random state
     dsp::SampleRateConverter<1> driftRandom;
 
     TemporalisteModule();
     void process(const ProcessArgs& args) override;
     void onReset() override;
-    
+
     // DSP processors
     void processPolyrhythmicDensity(float density);
     bool processStochasticDrift(int layer, float drift);
-    float processSpectralAccent(int layer, float accent, bool gateActive);
+    float processSpectralAccent(int layer, float accent, bool gateActive, float sampleRate);
     void processTimeSpaceShift(int layer, float shift, float sampleTime);
 };

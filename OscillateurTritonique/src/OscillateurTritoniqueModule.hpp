@@ -31,36 +31,11 @@ struct OscillateurTritoniqueModule : Module {
         NUM_LIGHTS
     };
 
-    // Wavetable morphing
-    static constexpr int WAVETABLE_SIZE = 2048;
-    float wavetable[WAVETABLE_SIZE];
-    float wavetablePhase = 0.f;
-    
-    // Portamento
-    float targetFreq = 261.626f; // C4
-    float currentFreq = 261.626f;
-    
-    // Micro delay for temporal skew
-    static constexpr int SKEW_BUFFER_SIZE = 4096;
-    float skewBuffer[SKEW_BUFFER_SIZE] = {};
-    int skewWriteIdx = 0;
-    
-    // Harmonic expansion for spectral bloom
-    static constexpr int NUM_HARMONICS = 12;
-    float harmonicPhases[NUM_HARMONICS] = {};
-    float harmonicAmps[NUM_HARMONICS] = {};
-    
-    // Tritone interval (sqrt(2), 600 cents)
-    static constexpr float TRITONE_RATIO = 1.41421356237f;
+    // Simple oscillator state
+    float phase = 0.f;
+    float currentFreq = 261.626f; // C4
 
     OscillateurTritoniqueModule();
     void process(const ProcessArgs& args) override;
     void onReset() override;
-    
-    // DSP processors
-    void generateWavetable(float topology);
-    float processTopologyWarp(float topology, float phase);
-    float processTemporalSkew(float input, float skew, float sampleTime);
-    float processSpectralBloom(float bloom, float baseFreq, float sampleTime);
-    float processTritoneGlide(float voct, float glide, float sampleTime);
 };

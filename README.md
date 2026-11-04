@@ -36,12 +36,11 @@ A filter shaped by diffusion theory and phase dispersion.
 
 ### SIREN CONCRÈTE — Dub Siren + Concrète Sampler
 
-A performance instrument combining dub siren control with granular sampling.
+A prototype oscillator with a V/Oct-labeled pitch input and sawtooth output. The
+current implementation does not yet use its Sweep, Grain, Decay, and Texture
+controls or their CV inputs; the granular and delay design remains planned.
 
-- 8-grain scatter
-- Multi-harmonic spectral shift
-- Tape-style drift
-- 8-tap delay bloom
+- Planned: granular sampling, spectral shift, tape-style drift, and delay bloom
 
 ### DUBBOÎTE 2/4 — Dub Mixer
 
@@ -55,12 +54,11 @@ A four-channel dub mixer emphasizing 2/4 routing and spatial diffusion.
 
 ### OSCILLATEUR TRITONIQUE — Tritone Oscillator
 
-A tone engine built on tritone tension and shifting harmonics.
+A sine oscillator with V/Oct pitch input and a Glide control. Topology, Skew,
+and Bloom controls and their CV inputs are declared but do not yet affect the
+audio output.
 
-- Morphing topology
-- Micro-delay timing coloration
-- Tritone-oriented harmonic bloom
-- Tritone glide
+- Planned: morphing topology, micro-delay coloration, and tritone harmonic bloom
 
 ### TEMPORALISTE — Generative Polyrhythm Engine
 
@@ -105,4 +103,5 @@ cd Temporaliste && make devinstall
 
 ## License
 
-MIT License
+See each module's license file. `OBF/LICENSE` contains an MIT license for OBF;
+no collection-wide license is declared here.
