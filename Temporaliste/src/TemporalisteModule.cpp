@@ -101,7 +101,7 @@ bool TemporalisteModule::processStochasticDrift(int layer, float drift) {
     return (randomValue < driftedProb);
 }
 
-float TemporalisteModule::processSpectralAccent(int layer, float accent, bool gateActive) {
+float TemporalisteModule::processSpectralAccent(int layer, float accent, bool gateActive, float sampleRate) {
     // Apply spectral shaping to gate events
     // accent 0.0 = clean gates, 1.0 = complex harmonic content
     
@@ -113,7 +113,7 @@ float TemporalisteModule::processSpectralAccent(int layer, float accent, bool ga
     if (accent > 0.1f) {
         // Generate harmonics at different frequencies
         float fundamental = 100.f + (float)layer * 50.f;
-        float phase = (float)APP->engine->getFrame() / 48000.f;
+        float phase = (float)APP->engine->getFrame() / sampleRate;
         
         float harmonic1 = std::sin(2.f * M_PI * fundamental * phase);
         float harmonic2 = std::sin(2.f * M_PI * fundamental * 2.f * phase) * 0.5f;
@@ -215,7 +215,7 @@ void TemporalisteModule::process(const ProcessArgs& args) {
         bool gateActive = gateGenerators[i].process(args.sampleTime);
         
         // Apply spectral accent shaping
-        float gateVoltage = processSpectralAccent(i, accent, gateActive);
+        float gateVoltage = processSpectralAccent(i, accent, gateActive, args.sampleRate);
         
         outputs[GATE1_OUTPUT + i].setVoltage(gateVoltage);
     }

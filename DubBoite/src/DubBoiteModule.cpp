@@ -30,13 +30,13 @@ DubBoiteModule::DubBoiteModule() {
     masterVu.lambda = 1 / 0.1f; // 100ms integration time
 }
 
-float DubBoiteModule::processSendDiffusion(float input, float diffusion) {
+float DubBoiteModule::processSendDiffusion(float input, float diffusion, float sampleRate) {
     if (diffusion < 0.01f) return 0.f;
-    
+
     float output = 0.f;
     for (int i = 0; i < NUM_PATHS; i++) {
         int delayMs = 10 + i * 10; // 10ms to 80ms
-        int delaySamples = (int)(delayMs * 48.f); // Assume 48kHz
+        int delaySamples = (int)(delayMs * sampleRate / 1000.f);
         
         // Write input to path
         diffusionPaths[i][diffusionWritePos[i]] = input;
@@ -55,7 +55,7 @@ float DubBoiteModule::processSendDiffusion(float input, float diffusion) {
     return output * diffusion;
 }
 
-float DubBoiteModule::processTapeScrub(float input, int channel, float scrub, float sampleTime) {
+float DubBoiteModule::processTapeScrub(float input, int channel, float scrub, float sampleTime, float sampleRate) {
     // LFO with harmonics
     float lfoFreq = 0.3f + scrub * 2.f; // 0.3-2.3Hz
     scrubPhase += lfoFreq * sampleTime;
@@ -66,8 +66,8 @@ float DubBoiteModule::processTapeScrub(float input, int channel, float scrub, fl
     lfo += std::sin(2.f * M_PI * scrubPhase * 5.3f) * 0.2f;
     
     // Modulated delay 5-25ms
-    int baseDelay = (int)(15.f * 48.f);
-    int modDelay = (int)(10.f * 48.f * lfo * scrub);
+    int baseDelay = (int)(15.f * sampleRate / 1000.f);
+    int modDelay = (int)(10.f * sampleRate / 1000.f * lfo * scrub);
     int totalDelay = clamp(baseDelay + modDelay, 1, DELAY_SIZE - 1);
     
     delayBuffers[channel][delayWritePos[channel]] = input;
@@ -138,7 +138,7 @@ void DubBoiteModule::process(const ProcessArgs& args) {
         
         // Process chain
         float sig = input * fader;
-        sig = processTapeScrub(sig, i, scrub, args.sampleTime);
+        sig = processTapeScrub(sig, i, scrub, args.sampleTime, args.sampleRate);
         sig = processLowDrift(sig, i, lowdrift, args.sampleTime);
         sig = processSaturationBloom(sig, i, saturation);
         
@@ -153,7 +153,7 @@ void DubBoiteModule::process(const ProcessArgs& args) {
     }
     
     // Process send diffusion
-    float sendOut = processSendDiffusion(sendSum, diffusion);
+    float sendOut = processSendDiffusion(sendSum, diffusion, args.sampleRate);
     
     // Apply master
     float finalMix = mixSum * master;

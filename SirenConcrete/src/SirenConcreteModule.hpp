@@ -26,53 +26,10 @@ struct SirenConcreteModule : rack::Module {
 		NUM_OUTPUTS
 	};
 
-	// Granular synthesis state
-	static constexpr int WAVETABLE_SIZE = 2048;
-	static constexpr int MAX_GRAINS = 8;
-	static constexpr int DELAY_SIZE = 8192;
-	
-	float wavetable[WAVETABLE_SIZE];
-	float grainPhases[MAX_GRAINS];
-	float grainAmps[MAX_GRAINS];
-	float grainRates[MAX_GRAINS];
-	int activeGrains;
-	
-	// Spectral shift state
-	float harmonicPhases[16];
-	float harmonicAmps[16];
-	
-	// Phase drift LFO
-	float driftPhase;
-	float driftAmount;
-	
-	// Echo bloom delay
-	float delayBuffer[DELAY_SIZE];
-	int delayWritePos;
-	
-	// Base oscillator
-	float basePhase;
-	float baseFreq;
-	
-	// RNG
-	uint32_t rng;
+	// Simple oscillator state
+	float phase = 0.f;
+	float currentFreq = 220.f;
 
 	SirenConcreteModule();
 	void process(const ProcessArgs& args) override;
-	
-	// DSP helper functions
-	float processGrainMorph(float input, float morph, float sampleRate);
-	float processSpectralShift(float input, float shift, float freq);
-	float processPhaseDrift(float input, float drift, float sampleRate);
-	float processEchoBloom(float input, float bloom, float sampleRate);
-	
-	uint32_t xorshift32() {
-		rng ^= rng << 13;
-		rng ^= rng >> 17;
-		rng ^= rng << 5;
-		return rng;
-	}
-	
-	float random() {
-		return (float)xorshift32() / (float)0xFFFFFFFF;
-	}
 };

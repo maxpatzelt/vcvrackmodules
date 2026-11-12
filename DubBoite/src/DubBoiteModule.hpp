@@ -58,8 +58,8 @@ struct DubBoiteModule : Module {
     DubBoiteModule();
     void process(const ProcessArgs& args) override;
     
-    float processSendDiffusion(float input, float diffusion);
-    float processTapeScrub(float input, int channel, float scrub, float sampleTime);
+    float processSendDiffusion(float input, float diffusion, float sampleRate);
+    float processTapeScrub(float input, int channel, float scrub, float sampleTime, float sampleRate);
     float processLowDrift(float input, int channel, float drift, float sampleTime);
     float processSaturationBloom(float input, int channel, float bloom);
 };

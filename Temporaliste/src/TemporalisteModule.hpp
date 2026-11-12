@@ -73,6 +73,6 @@ struct TemporalisteModule : Module {
     // DSP processors
     void processPolyrhythmicDensity(float density);
     bool processStochasticDrift(int layer, float drift);
-    float processSpectralAccent(int layer, float accent, bool gateActive);
+    float processSpectralAccent(int layer, float accent, bool gateActive, float sampleRate);
     void processTimeSpaceShift(int layer, float shift, float sampleTime);
 };
